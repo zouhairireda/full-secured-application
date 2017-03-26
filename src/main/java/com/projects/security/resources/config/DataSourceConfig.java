@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-@Configuration
+@Configuration(value="ConfigResource")
 public class DataSourceConfig {
 
 	@Autowired
@@ -17,7 +17,7 @@ public class DataSourceConfig {
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(env.getProperty("jbdc.driverClassName"));
+		dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
 		dataSource.setUrl(env.getProperty("jdbc.url"));
 		dataSource.setUsername(env.getProperty("jdbc.user"));
 		dataSource.setPassword(env.getProperty("jdbc.pass"));
