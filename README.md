@@ -3,7 +3,7 @@ A full secured application using OAuth2 with an authorization server and a resou
 
 Technology : Java - Spring Boot (Web+Security+Data) - REST API - OAuth2 - AngularJS 1.5
 
-#Technical Specification
+# Technical Specification
 
 Secure a REST API with OAuth and consume it from a simple AngularJS client.
 
