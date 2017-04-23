@@ -9,8 +9,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import com.projects.security.authorization.server.AuthServerOAuth2Config;
-
 @Configuration
 public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -19,20 +17,22 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		log.info("Inside in memory authentication");
-		auth.inMemoryAuthentication().withUser("reda").password("123").roles("USER");
+		auth.inMemoryAuthentication().withUser("reda").password("123").roles("USER").and().withUser("zouhairi")
+				.password("122").roles("ADMIN");
 	}
-	
+
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		log.info("Inside bean authentication manager preOauth");
 		return super.authenticationManagerBean();
 	}
-	
+
+	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		log.info("Inside route configuration");
-		http.authorizeRequests().antMatchers("/login").permitAll()
-		.anyRequest().authenticated().and().formLogin().permitAll();
+		http.authorizeRequests().antMatchers("/login").permitAll().anyRequest().authenticated().and().formLogin()
+				.permitAll();
 	}
 
 }
