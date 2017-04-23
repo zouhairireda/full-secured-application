@@ -1,5 +1,7 @@
 package com.projects.security.authorization.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -19,33 +21,43 @@ import com.projects.security.authorization.config.DataSourceConfig;
 @EnableAuthorizationServer
 public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter {
 
+	private Logger log = LoggerFactory.getLogger(AuthServerOAuth2Config.class);
+
 	@Autowired
 	@Qualifier("authenticationManagerBean")
 	private AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	private DataSourceConfig dataSourceConfig;
 
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+		log.info("Inside security configuration");
 		oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
 	}
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.jdbc(dataSourceConfig.dataSource()).withClient("sampleClientId").authorizedGrantTypes("implicit").scopes("read")
-				.autoApprove(true).and().withClient("clientIdPassword").secret("secret")
+		log.info("Inside Oauth2 configuration");
+		clients.jdbc(dataSourceConfig.dataSource()).withClient("sampleClientId").authorizedGrantTypes("implicit")
+				.scopes("read").autoApprove(true).and().withClient("clientIdPassword").secret("secret")
 				.authorizedGrantTypes("password", "authorization_code", "refresh_token").scopes("read");
 	}
-	
+
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+		log.info("Inside configuration of tokenstore persistency");
 		endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager);
 	}
-	
+
 	@Bean
 	public TokenStore tokenStore() {
-		return new JdbcTokenStore(dataSourceConfig.dataSource());
+
+		TokenStore tokenStore = new JdbcTokenStore(dataSourceConfig.dataSource());
+		log.info("Inside Token Store Bean");
+		log.info("Token store : " + tokenStore.toString());
+
+		return tokenStore;
 	}
 
 }
